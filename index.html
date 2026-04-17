@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>二次元世界</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700;900&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #f5f5f5;
+      --gray: #888;
+      --border: #2a2a2a;
+    }
+
+    body {
+      background-color: var(--black);
+      color: var(--white);
+      font-family: 'Noto Sans TC', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Scanline overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.015) 2px,
+        rgba(255,255,255,0.015) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      opacity: 0.06;
+    }
+
+    .hero-bg span {
+      border: 1px solid var(--white);
+    }
+
+    .hero-circle {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.08);
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .hero-circle:nth-child(2) { width: 350px; height: 350px; animation-delay: 0.5s; }
+    .hero-circle:nth-child(3) { width: 200px; height: 200px; animation-delay: 1s; border-color: rgba(255,255,255,0.15); }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50%       { transform: scale(1.05); opacity: 1; }
+    }
+
+    .hero-content {
+      position: relative;
+      text-align: center;
+      z-index: 1;
+    }
+
+    .hero-tag {
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+      font-size: clamp(3rem, 10vw, 8rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      mix-blend-mode: difference;
+    }
+
+    .hero-title .outline {
+      -webkit-text-stroke: 1px var(--white);
+      color: transparent;
+    }
+
+    .hero-title .filled {
+      color: var(--white);
+    }
+
+    .hero-sub {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: var(--gray);
+      letter-spacing: 0.1em;
+    }
+
+    .hero-btn {
+      margin-top: 3rem;
+      display: inline-block;
+      padding: 0.8rem 2.5rem;
+      border: 1px solid var(--white);
+      color: var(--white);
+      text-decoration: none;
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .hero-btn:hover {
+      background: var(--white);
+      color: var(--black);
+    }
+
+    /* ── MARQUEE ── */
+    .marquee-wrap {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      padding: 0.9rem 0;
+      background: var(--black);
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 4rem;
+      animation: marquee 20s linear infinite;
+      white-space: nowrap;
+    }
+
+    .marquee-track span {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--gray);
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .marquee-track span.dot {
+      color: var(--white);
+      font-size: 0.4rem;
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── CHARACTER CARDS ── */
+    .section {
+      padding: 6rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .section-num {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      color: var(--gray);
+    }
+
+    .section-title {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 700;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .card {
+      background: var(--black);
+      padding: 2.5rem 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      background: #111;
+    }
+
+    .card:hover .card-avatar {
+      transform: scale(1.05);
+    }
+
+    .card-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      margin-bottom: 1.5rem;
+      transition: transform 0.3s;
+      background: #111;
+      overflow: hidden;
+    }
+
+    .card-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .card-role {
+      font-size: 0.7rem;
+      color: var(--gray);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+
+    .card-desc {
+      font-size: 0.82rem;
+      color: #aaa;
+      line-height: 1.7;
+    }
+
+    .card-tag {
+      margin-top: 1.5rem;
+      display: inline-block;
+      padding: 0.25rem 0.7rem;
+      border: 1px solid var(--border);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--gray);
+    }
+
+    .card-corner {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 20px;
+      height: 20px;
+      border-top: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      transition: border-color 0.3s;
+    }
+
+    .card:hover .card-corner {
+      border-color: var(--white);
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    /* ── STATS ── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .stat {
+      background: var(--black);
+      padding: 2.5rem 2rem;
+    }
+
+    .stat-num {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 900;
+      line-height: 1;
+      -webkit-text-stroke: 1px var(--white);
+      color: transparent;
+    }
+
+    .stat-label {
+      margin-top: 0.5rem;
+      font-size: 0.7rem;
+      color: var(--gray);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+
+    /* ── QUOTE ── */
+    .quote-section {
+      padding: 6rem 2rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .quote-section::before {
+      content: '❝';
+      position: absolute;
+      top: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 4rem;
+      color: var(--border);
+      line-height: 1;
+    }
+
+    .quote-text {
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      font-weight: 300;
+      line-height: 1.8;
+      max-width: 700px;
+      margin: 0 auto;
+      color: #ccc;
+    }
+
+    .quote-source {
+      margin-top: 2rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--gray);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-logo {
+      font-size: 1.2rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+    }
+
+    .footer-copy {
+      font-size: 0.7rem;
+      color: var(--gray);
+      letter-spacing: 0.15em;
+    }
+
+    /* ── Cursor glow ── */
+    .cursor-glow {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: left 0.1s, top 0.1s;
+      z-index: 9998;
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor-glow" id="glow"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-circle"></div>
+  <div class="hero-circle"></div>
+  <div class="hero-circle"></div>
+  <div class="hero-content">
+    <p class="hero-tag">二次元世界 &nbsp;·&nbsp; Anime Universe</p>
+    <h1 class="hero-title">
+      <span class="outline">ANIME</span><br>
+      <span class="filled">WORLD</span>
+    </h1>
+    <p class="hero-sub">黑白之間，幻想無限 &nbsp;— &nbsp;Between black &amp; white, endless fantasy</p>
+    <a href="#characters" class="hero-btn">進入世界</a>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="marquee"></div>
+</div>
+
+<!-- CHARACTERS -->
+<div class="section" id="characters">
+  <div class="section-header">
+    <span class="section-num">01 —</span>
+    <h2 class="section-title">角色列表</h2>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-corner"></div>
+      <div class="card-avatar">⚔️</div>
+      <div class="card-name">暗夜劍士</div>
+      <div class="card-role">Swordsman · Level 99</div>
+      <p class="card-desc">誕生於黑暗與光明的交界，以刀鋒書寫命運的傳說劍士。</p>
+      <span class="card-tag">攻擊型</span>
+    </div>
+    <div class="card">
+      <div class="card-corner"></div>
+      <div class="card-avatar">🌙</div>
+      <div class="card-name">月詠術師</div>
+      <div class="card-role">Mage · Level 87</div>
+      <p class="card-desc">月光是她的魔法之源，寂靜的夜晚賦予她無盡的力量。</p>
+      <span class="card-tag">魔法型</span>
+    </div>
+    <div class="card">
+      <div class="card-corner"></div>
+      <div class="card-avatar">🐺</div>
+      <div class="card-name">銀狼少年</div>
+      <div class="card-role">Ranger · Level 74</div>
+      <p class="card-desc">與荒野共生，聆聽風聲，是最後一位流浪於邊境的遊俠。</p>
+      <span class="card-tag">速度型</span>
+    </div>
+    <div class="card">
+      <div class="card-corner"></div>
+      <div class="card-avatar">🌸</div>
+      <div class="card-name">白華聖女</div>
+      <div class="card-role">Healer · Level 91</div>
+      <p class="card-desc">純白花瓣落下之處，傷痕癒合，靈魂重獲安寧。</p>
+      <span class="card-tag">治療型</span>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- STATS -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">02 —</span>
+    <h2 class="section-title">世界數據</h2>
+  </div>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num">428</div>
+      <div class="stat-label">角色總數</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">17</div>
+      <div class="stat-label">世界區域</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">故事可能</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">01</div>
+      <div class="stat-label">傳說英雄</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- QUOTE -->
+<div class="quote-section">
+  <p class="quote-text">「就算是黑白的世界，只要心中有光，<br>便能描繪出最絢爛的色彩。」</p>
+  <p class="quote-source">— 暗夜劍士 &nbsp;·&nbsp; 二次元世界</p>
+</div>
+
+<hr class="divider">
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">二次元 ✦ WORLD</div>
+  <div class="footer-copy">© 2026 &nbsp;·&nbsp; All rights reserved &nbsp;·&nbsp; 黑白幻想宇宙</div>
+</footer>
+
+<script>
+  // Cursor glow
+  const glow = document.getElementById('glow');
+  document.addEventListener('mousemove', e => {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top  = e.clientY + 'px';
+  });
+
+  // Grid bg
+  const bg = document.getElementById('heroBg');
+  for (let i = 0; i < 96; i++) bg.appendChild(document.createElement('span'));
+
+  // Marquee
+  const items = [
+    '二次元世界', '✦', 'ANIME UNIVERSE', '✦',
+    '暗夜劍士', '✦', '月詠術師', '✦',
+    '銀狼少年', '✦', '白華聖女', '✦',
+    'Black & White', '✦', '幻想無限', '✦',
+  ];
+  const track = document.getElementById('marquee');
+  const doubled = [...items, ...items];
+  doubled.forEach(t => {
+    const s = document.createElement('span');
+    s.textContent = t;
+    if (t === '✦') s.classList.add('dot');
+    track.appendChild(s);
+  });
+</script>
+</body>
+</html>

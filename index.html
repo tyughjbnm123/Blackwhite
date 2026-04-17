@@ -5,13 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>二次元世界</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700;900&family=Noto+Sans+JP:wght@300;400;700;900&display=swap');
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
       --black: #0a0a0a;
@@ -23,24 +19,52 @@
     body {
       background-color: var(--black);
       color: var(--white);
-      font-family: 'Noto Sans TC', sans-serif;
+      font-family: 'Noto Sans TC', 'Noto Sans JP', sans-serif;
       overflow-x: hidden;
     }
 
-    /* ── Scanline overlay ── */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(255,255,255,0.015) 2px,
-        rgba(255,255,255,0.015) 4px
+        0deg, transparent, transparent 2px,
+        rgba(255,255,255,0.015) 2px, rgba(255,255,255,0.015) 4px
       );
       pointer-events: none;
       z-index: 9999;
+    }
+
+    /* ── LANG SWITCHER ── */
+    .lang-bar {
+      position: fixed;
+      top: 1.2rem;
+      right: 1.5rem;
+      z-index: 1000;
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+    }
+
+    .lang-btn {
+      background: var(--black);
+      color: var(--gray);
+      border: none;
+      border-right: 1px solid var(--border);
+      padding: 0.4rem 0.85rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      font-family: inherit;
+    }
+
+    .lang-btn:last-child { border-right: none; }
+
+    .lang-btn:hover,
+    .lang-btn.active {
+      background: var(--white);
+      color: var(--black);
     }
 
     /* ── HERO ── */
@@ -64,14 +88,11 @@
       opacity: 0.06;
     }
 
-    .hero-bg span {
-      border: 1px solid var(--white);
-    }
+    .hero-bg span { border: 1px solid var(--white); }
 
     .hero-circle {
       position: absolute;
-      width: 500px;
-      height: 500px;
+      width: 500px; height: 500px;
       border-radius: 50%;
       border: 1px solid rgba(255,255,255,0.08);
       animation: pulse 4s ease-in-out infinite;
@@ -85,11 +106,7 @@
       50%       { transform: scale(1.05); opacity: 1; }
     }
 
-    .hero-content {
-      position: relative;
-      text-align: center;
-      z-index: 1;
-    }
+    .hero-content { position: relative; text-align: center; z-index: 1; }
 
     .hero-tag {
       font-size: 0.7rem;
@@ -104,7 +121,6 @@
       font-weight: 900;
       line-height: 1;
       letter-spacing: -0.02em;
-      mix-blend-mode: difference;
     }
 
     .hero-title .outline {
@@ -112,9 +128,7 @@
       color: transparent;
     }
 
-    .hero-title .filled {
-      color: var(--white);
-    }
+    .hero-title .filled { color: var(--white); }
 
     .hero-sub {
       margin-top: 2rem;
@@ -136,10 +150,7 @@
       transition: background 0.3s, color 0.3s;
     }
 
-    .hero-btn:hover {
-      background: var(--white);
-      color: var(--black);
-    }
+    .hero-btn:hover { background: var(--white); color: var(--black); }
 
     /* ── MARQUEE ── */
     .marquee-wrap {
@@ -147,13 +158,12 @@
       border-bottom: 1px solid var(--border);
       overflow: hidden;
       padding: 0.9rem 0;
-      background: var(--black);
     }
 
     .marquee-track {
       display: flex;
       gap: 4rem;
-      animation: marquee 20s linear infinite;
+      animation: marquee 22s linear infinite;
       white-space: nowrap;
     }
 
@@ -165,17 +175,14 @@
       flex-shrink: 0;
     }
 
-    .marquee-track span.dot {
-      color: var(--white);
-      font-size: 0.4rem;
-    }
+    .marquee-track span.dot { color: var(--white); font-size: 0.4rem; }
 
     @keyframes marquee {
       from { transform: translateX(0); }
       to   { transform: translateX(-50%); }
     }
 
-    /* ── CHARACTER CARDS ── */
+    /* ── SECTIONS ── */
     .section {
       padding: 6rem 2rem;
       max-width: 1200px;
@@ -189,17 +196,10 @@
       margin-bottom: 3rem;
     }
 
-    .section-num {
-      font-size: 0.65rem;
-      letter-spacing: 0.3em;
-      color: var(--gray);
-    }
+    .section-num { font-size: 0.65rem; letter-spacing: 0.3em; color: var(--gray); }
+    .section-title { font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 700; }
 
-    .section-title {
-      font-size: clamp(1.5rem, 4vw, 2.5rem);
-      font-weight: 700;
-    }
-
+    /* ── CARDS ── */
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -217,17 +217,11 @@
       cursor: pointer;
     }
 
-    .card:hover {
-      background: #111;
-    }
-
-    .card:hover .card-avatar {
-      transform: scale(1.05);
-    }
+    .card:hover { background: #111; }
+    .card:hover .card-avatar { transform: scale(1.05); }
 
     .card-avatar {
-      width: 80px;
-      height: 80px;
+      width: 80px; height: 80px;
       border-radius: 50%;
       border: 1px solid var(--border);
       display: flex;
@@ -237,28 +231,11 @@
       margin-bottom: 1.5rem;
       transition: transform 0.3s;
       background: #111;
-      overflow: hidden;
     }
 
-    .card-name {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 0.3rem;
-    }
-
-    .card-role {
-      font-size: 0.7rem;
-      color: var(--gray);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-bottom: 1.2rem;
-    }
-
-    .card-desc {
-      font-size: 0.82rem;
-      color: #aaa;
-      line-height: 1.7;
-    }
+    .card-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .card-role { font-size: 0.7rem; color: var(--gray); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1.2rem; }
+    .card-desc { font-size: 0.82rem; color: #aaa; line-height: 1.7; }
 
     .card-tag {
       margin-top: 1.5rem;
@@ -272,25 +249,17 @@
 
     .card-corner {
       position: absolute;
-      top: 1rem;
-      right: 1rem;
-      width: 20px;
-      height: 20px;
+      top: 1rem; right: 1rem;
+      width: 20px; height: 20px;
       border-top: 1px solid var(--border);
       border-right: 1px solid var(--border);
       transition: border-color 0.3s;
     }
 
-    .card:hover .card-corner {
-      border-color: var(--white);
-    }
+    .card:hover .card-corner { border-color: var(--white); }
 
     /* ── DIVIDER ── */
-    .divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 0;
-    }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
 
     /* ── STATS ── */
     .stats {
@@ -301,10 +270,7 @@
       border: 1px solid var(--border);
     }
 
-    .stat {
-      background: var(--black);
-      padding: 2.5rem 2rem;
-    }
+    .stat { background: var(--black); padding: 2.5rem 2rem; }
 
     .stat-num {
       font-size: clamp(2.5rem, 6vw, 4rem);
@@ -314,13 +280,7 @@
       color: transparent;
     }
 
-    .stat-label {
-      margin-top: 0.5rem;
-      font-size: 0.7rem;
-      color: var(--gray);
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-    }
+    .stat-label { margin-top: 0.5rem; font-size: 0.7rem; color: var(--gray); letter-spacing: 0.25em; text-transform: uppercase; }
 
     /* ── QUOTE ── */
     .quote-section {
@@ -332,8 +292,7 @@
     .quote-section::before {
       content: '❝';
       position: absolute;
-      top: 3rem;
-      left: 50%;
+      top: 3rem; left: 50%;
       transform: translateX(-50%);
       font-size: 4rem;
       color: var(--border);
@@ -349,12 +308,7 @@
       color: #ccc;
     }
 
-    .quote-source {
-      margin-top: 2rem;
-      font-size: 0.7rem;
-      letter-spacing: 0.3em;
-      color: var(--gray);
-    }
+    .quote-source { margin-top: 2rem; font-size: 0.7rem; letter-spacing: 0.3em; color: var(--gray); }
 
     /* ── FOOTER ── */
     footer {
@@ -369,23 +323,13 @@
       margin: 0 auto;
     }
 
-    .footer-logo {
-      font-size: 1.2rem;
-      font-weight: 900;
-      letter-spacing: 0.1em;
-    }
+    .footer-logo { font-size: 1.2rem; font-weight: 900; letter-spacing: 0.1em; }
+    .footer-copy { font-size: 0.7rem; color: var(--gray); letter-spacing: 0.15em; }
 
-    .footer-copy {
-      font-size: 0.7rem;
-      color: var(--gray);
-      letter-spacing: 0.15em;
-    }
-
-    /* ── Cursor glow ── */
+    /* ── CURSOR GLOW ── */
     .cursor-glow {
       position: fixed;
-      width: 300px;
-      height: 300px;
+      width: 300px; height: 300px;
       border-radius: 50%;
       background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
       pointer-events: none;
@@ -393,11 +337,22 @@
       transition: left 0.1s, top 0.1s;
       z-index: 9998;
     }
+
+    /* ── LANG TRANSITION ── */
+    [data-i18n] { transition: opacity 0.2s; }
+    .lang-fade { opacity: 0; }
   </style>
 </head>
 <body>
 
 <div class="cursor-glow" id="glow"></div>
+
+<!-- LANG SWITCHER -->
+<nav class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('zh')">繁中</button>
+  <button class="lang-btn" onclick="setLang('ja')">日本語</button>
+  <button class="lang-btn" onclick="setLang('en')">EN</button>
+</nav>
 
 <!-- HERO -->
 <section class="hero">
@@ -406,13 +361,13 @@
   <div class="hero-circle"></div>
   <div class="hero-circle"></div>
   <div class="hero-content">
-    <p class="hero-tag">二次元世界 &nbsp;·&nbsp; Anime Universe</p>
+    <p class="hero-tag" data-i18n="heroTag"></p>
     <h1 class="hero-title">
       <span class="outline">ANIME</span><br>
       <span class="filled">WORLD</span>
     </h1>
-    <p class="hero-sub">黑白之間，幻想無限 &nbsp;— &nbsp;Between black &amp; white, endless fantasy</p>
-    <a href="#characters" class="hero-btn">進入世界</a>
+    <p class="hero-sub" data-i18n="heroSub"></p>
+    <a href="#characters" class="hero-btn" data-i18n="heroBtn"></a>
   </div>
 </section>
 
@@ -425,41 +380,46 @@
 <div class="section" id="characters">
   <div class="section-header">
     <span class="section-num">01 —</span>
-    <h2 class="section-title">角色列表</h2>
+    <h2 class="section-title" data-i18n="secCharTitle"></h2>
   </div>
   <div class="cards">
+
     <div class="card">
       <div class="card-corner"></div>
       <div class="card-avatar">⚔️</div>
-      <div class="card-name">暗夜劍士</div>
+      <div class="card-name" data-i18n="c1name"></div>
       <div class="card-role">Swordsman · Level 99</div>
-      <p class="card-desc">誕生於黑暗與光明的交界，以刀鋒書寫命運的傳說劍士。</p>
-      <span class="card-tag">攻擊型</span>
+      <p class="card-desc" data-i18n="c1desc"></p>
+      <span class="card-tag" data-i18n="c1tag"></span>
     </div>
+
     <div class="card">
       <div class="card-corner"></div>
       <div class="card-avatar">🌙</div>
-      <div class="card-name">月詠術師</div>
+      <div class="card-name" data-i18n="c2name"></div>
       <div class="card-role">Mage · Level 87</div>
-      <p class="card-desc">月光是她的魔法之源，寂靜的夜晚賦予她無盡的力量。</p>
-      <span class="card-tag">魔法型</span>
+      <p class="card-desc" data-i18n="c2desc"></p>
+      <span class="card-tag" data-i18n="c2tag"></span>
     </div>
+
     <div class="card">
       <div class="card-corner"></div>
       <div class="card-avatar">🐺</div>
-      <div class="card-name">銀狼少年</div>
+      <div class="card-name" data-i18n="c3name"></div>
       <div class="card-role">Ranger · Level 74</div>
-      <p class="card-desc">與荒野共生，聆聽風聲，是最後一位流浪於邊境的遊俠。</p>
-      <span class="card-tag">速度型</span>
+      <p class="card-desc" data-i18n="c3desc"></p>
+      <span class="card-tag" data-i18n="c3tag"></span>
     </div>
+
     <div class="card">
       <div class="card-corner"></div>
       <div class="card-avatar">🌸</div>
-      <div class="card-name">白華聖女</div>
+      <div class="card-name" data-i18n="c4name"></div>
       <div class="card-role">Healer · Level 91</div>
-      <p class="card-desc">純白花瓣落下之處，傷痕癒合，靈魂重獲安寧。</p>
-      <span class="card-tag">治療型</span>
+      <p class="card-desc" data-i18n="c4desc"></p>
+      <span class="card-tag" data-i18n="c4tag"></span>
     </div>
+
   </div>
 </div>
 
@@ -469,24 +429,24 @@
 <div class="section">
   <div class="section-header">
     <span class="section-num">02 —</span>
-    <h2 class="section-title">世界數據</h2>
+    <h2 class="section-title" data-i18n="secStatTitle"></h2>
   </div>
   <div class="stats">
     <div class="stat">
       <div class="stat-num">428</div>
-      <div class="stat-label">角色總數</div>
+      <div class="stat-label" data-i18n="stat1"></div>
     </div>
     <div class="stat">
       <div class="stat-num">17</div>
-      <div class="stat-label">世界區域</div>
+      <div class="stat-label" data-i18n="stat2"></div>
     </div>
     <div class="stat">
       <div class="stat-num">∞</div>
-      <div class="stat-label">故事可能</div>
+      <div class="stat-label" data-i18n="stat3"></div>
     </div>
     <div class="stat">
       <div class="stat-num">01</div>
-      <div class="stat-label">傳說英雄</div>
+      <div class="stat-label" data-i18n="stat4"></div>
     </div>
   </div>
 </div>
@@ -495,19 +455,124 @@
 
 <!-- QUOTE -->
 <div class="quote-section">
-  <p class="quote-text">「就算是黑白的世界，只要心中有光，<br>便能描繪出最絢爛的色彩。」</p>
-  <p class="quote-source">— 暗夜劍士 &nbsp;·&nbsp; 二次元世界</p>
+  <p class="quote-text" data-i18n="quoteText"></p>
+  <p class="quote-source" data-i18n="quoteSource"></p>
 </div>
 
 <hr class="divider">
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">二次元 ✦ WORLD</div>
-  <div class="footer-copy">© 2026 &nbsp;·&nbsp; All rights reserved &nbsp;·&nbsp; 黑白幻想宇宙</div>
+  <div class="footer-logo" data-i18n="footerLogo"></div>
+  <div class="footer-copy" data-i18n="footerCopy"></div>
 </footer>
 
 <script>
+  // ── i18n data ──
+  const i18n = {
+    zh: {
+      heroTag:      '二次元世界 · Anime Universe',
+      heroSub:      '黑白之間，幻想無限 — Between black & white, endless fantasy',
+      heroBtn:      '進入世界',
+      secCharTitle: '角色列表',
+      c1name: '暗夜劍士', c1desc: '誕生於黑暗與光明的交界，以刀鋒書寫命運的傳說劍士。', c1tag: '攻擊型',
+      c2name: '月詠術師', c2desc: '月光是她的魔法之源，寂靜的夜晚賦予她無盡的力量。',   c2tag: '魔法型',
+      c3name: '銀狼少年', c3desc: '與荒野共生，聆聽風聲，是最後一位流浪於邊境的遊俠。', c3tag: '速度型',
+      c4name: '白華聖女', c4desc: '純白花瓣落下之處，傷痕癒合，靈魂重獲安寧。',       c4tag: '治療型',
+      secStatTitle: '世界數據',
+      stat1: '角色總數', stat2: '世界區域', stat3: '故事可能', stat4: '傳說英雄',
+      quoteText:   '「就算是黑白的世界，只要心中有光，\n便能描繪出最絢爛的色彩。」',
+      quoteSource: '— 暗夜劍士 · 二次元世界',
+      footerLogo:  '二次元 ✦ WORLD',
+      footerCopy:  '© 2026 · All rights reserved · 黑白幻想宇宙',
+      marquee: ['二次元世界','✦','ANIME UNIVERSE','✦','暗夜劍士','✦','月詠術師','✦','銀狼少年','✦','白華聖女','✦','Black & White','✦','幻想無限','✦'],
+    },
+    ja: {
+      heroTag:      '二次元世界 · アニメ · ユニバース',
+      heroSub:      '白と黒の間に、無限の幻想が広がる',
+      heroBtn:      '世界へ入る',
+      secCharTitle: 'キャラクター一覧',
+      c1name: '闇夜の剣士', c1desc: '闇と光の狭間に生まれ、剣の刃で運命を刻む伝説の剣士。', c1tag: '攻撃型',
+      c2name: '月詠の魔術師', c2desc: '月光が彼女の魔力の源。静かな夜が無限の力を与える。',  c2tag: '魔法型',
+      c3name: '銀狼の少年', c3desc: '荒野と共に生き、風の声を聞く、最後の流浪のレンジャー。', c3tag: '速度型',
+      c4name: '白華の聖女', c4desc: '白い花びらが落ちる場所、傷は癒え、魂は安らぎを取り戻す。', c4tag: '回復型',
+      secStatTitle: '世界データ',
+      stat1: 'キャラクター数', stat2: 'ワールドエリア', stat3: 'ストーリーの可能性', stat4: '伝説の英雄',
+      quoteText:   '「たとえ白黒の世界でも、心に光があれば、\n最も鮮やかな色彩を描くことができる。」',
+      quoteSource: '— 闇夜の剣士 · 二次元世界',
+      footerLogo:  '二次元 ✦ WORLD',
+      footerCopy:  '© 2026 · All rights reserved · 白黒ファンタジー宇宙',
+      marquee: ['二次元世界','✦','アニメユニバース','✦','闇夜の剣士','✦','月詠の魔術師','✦','銀狼の少年','✦','白華の聖女','✦','Black & White','✦','幻想無限','✦'],
+    },
+    en: {
+      heroTag:      'Anime Universe · 二次元',
+      heroSub:      'Between black & white — endless fantasy awaits',
+      heroBtn:      'Enter the World',
+      secCharTitle: 'Characters',
+      c1name: 'Dark Blade',    c1desc: 'Born at the boundary of darkness and light, a legendary swordsman who writes fate with his blade.', c1tag: 'Attacker',
+      c2name: 'Moon Mage',     c2desc: 'Moonlight is the source of her power. Silent nights grant her limitless strength.',                 c2tag: 'Mage',
+      c3name: 'Silver Wolf',   c3desc: 'Living as one with the wilderness, listening to the wind — the last wandering ranger of the frontier.', c3tag: 'Speed',
+      c4name: 'White Blossom', c4desc: 'Wherever white petals fall, wounds heal and souls find peace once more.',                           c4tag: 'Healer',
+      secStatTitle: 'World Stats',
+      stat1: 'Characters', stat2: 'World Zones', stat3: 'Story Paths', stat4: 'Legendary Hero',
+      quoteText:   '"Even in a world of black and white,\nas long as light lives in your heart, you can paint the most vivid colors."',
+      quoteSource: '— Dark Blade · Anime World',
+      footerLogo:  'ANIME ✦ WORLD',
+      footerCopy:  '© 2026 · All rights reserved · Black & White Fantasy Universe',
+      marquee: ['ANIME WORLD','✦','二次元','✦','Dark Blade','✦','Moon Mage','✦','Silver Wolf','✦','White Blossom','✦','Black & White','✦','Endless Fantasy','✦'],
+    },
+  };
+
+  let currentLang = 'zh';
+
+  function setLang(lang) {
+    if (lang === currentLang) return;
+    currentLang = lang;
+
+    document.documentElement.lang = lang === 'zh' ? 'zh-TW' : lang === 'ja' ? 'ja' : 'en';
+
+    // Fade out
+    const els = document.querySelectorAll('[data-i18n]');
+    els.forEach(el => el.classList.add('lang-fade'));
+
+    setTimeout(() => {
+      applyTranslations(lang);
+      rebuildMarquee(lang);
+      els.forEach(el => el.classList.remove('lang-fade'));
+    }, 200);
+
+    // Update active button
+    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+  }
+
+  function applyTranslations(lang) {
+    const t = i18n[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.dataset.i18n;
+      if (t[key] !== undefined) {
+        // Preserve line breaks
+        el.innerHTML = t[key].replace(/\n/g, '<br>');
+      }
+    });
+  }
+
+  function rebuildMarquee(lang) {
+    const track = document.getElementById('marquee');
+    track.innerHTML = '';
+    const items = [...i18n[lang].marquee, ...i18n[lang].marquee];
+    items.forEach(t => {
+      const s = document.createElement('span');
+      s.textContent = t;
+      if (t === '✦') s.classList.add('dot');
+      track.appendChild(s);
+    });
+  }
+
+  // Init
+  applyTranslations('zh');
+  rebuildMarquee('zh');
+
   // Cursor glow
   const glow = document.getElementById('glow');
   document.addEventListener('mousemove', e => {
@@ -518,22 +583,6 @@
   // Grid bg
   const bg = document.getElementById('heroBg');
   for (let i = 0; i < 96; i++) bg.appendChild(document.createElement('span'));
-
-  // Marquee
-  const items = [
-    '二次元世界', '✦', 'ANIME UNIVERSE', '✦',
-    '暗夜劍士', '✦', '月詠術師', '✦',
-    '銀狼少年', '✦', '白華聖女', '✦',
-    'Black & White', '✦', '幻想無限', '✦',
-  ];
-  const track = document.getElementById('marquee');
-  const doubled = [...items, ...items];
-  doubled.forEach(t => {
-    const s = document.createElement('span');
-    s.textContent = t;
-    if (t === '✦') s.classList.add('dot');
-    track.appendChild(s);
-  });
 </script>
 </body>
 </html>
